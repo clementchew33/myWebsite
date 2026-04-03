@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-181.png">
 <meta name="apple-mobile-web-app-title" content="Moomoo Delivery">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Princess Menu</title>
+<title>Modern Food Ordering</title>
 
 <style>
 * {
@@ -16,7 +16,7 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: #f8f9fb;
+  background: url('https://c8.alamy.com/comp/M6MNMA/cute-food-background-kawaii-cartoons-vector-illustration-graphic-design-M6MNMA.jpg') center center / cover no-repeat fixed;
   display: flex;
 }
 
@@ -225,11 +225,16 @@ const menuData = [
   { id: 5, name: "千层蛋糕", price: 0, category: "Dessert", img: "https://anchordairy.com.hk/media/recipe/thumbnail/thumbnail_recipe16.jpg" },
   { id: 6, name: "甜品", price: 0, category: "Dessert", img: "https://pic5.sucaisucai.com/13/67/13167395_2.jpg" },
   { id: 7, name: "Pizza", price: 0, img: "https://www.dominos.com.my/ManagedAssets/MY/product/PXBP/MY_PXBP_en_menu_12818.jpg?v-1509882796" },
+  { id: 8, name: "Llaollao", price: 0, category: "Dessert", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwb9gENs3YrhoVf9WsAbdHHMU4Qh422b6OEw&s" },
+  { id: 9, name: "草莓", price: 0, category: "Fruit", img: "https://foodal.com/wp-content/uploads/2015/03/Make-Strawberry-Season-Last-All-Year.jpg"},
+  { id: 10, name: "Orange", price: 0, category: "Fruit", img: "https://www.dole.com/sites/default/files/media/2025-01/oranges.png"},
+  { id: 11, name: "烤面包", price: 0, img: "https://morrisardoin.com/wp-content/uploads/2022/07/nsl715c9fv421.jpg"},
 ];
 
 const categoryLabels = {
   Drinks: "Drinks 饮料",
   Dessert: "Dessert 甜品",
+  Fruit: "Fruit 水果",
   McDonalds: "McDonalds 麦当劳",
   Menu: "Menu 菜单"
 };
@@ -263,12 +268,14 @@ function renderMenu() {
 
   const drinks = menuData.filter(item => item.category === "Drinks");
   const desserts = menuData.filter(item => item.category === "Dessert");
+  const fruits = menuData.filter(item => item.category === "Fruit");
   const mcdonalds = menuData.filter(item => item.category === "McDonalds");
   const others = menuData.filter(item => !item.category);
 
   menu.innerHTML = `
     ${renderCategory(categoryLabels.Drinks, drinks)}
     ${renderCategory(categoryLabels.Dessert, desserts)}
+    ${renderCategory(categoryLabels.Fruit, fruits)}
     ${renderCategory(categoryLabels.McDonalds, mcdonalds)}
     ${renderCategory(categoryLabels.Menu, others)}
   `;
