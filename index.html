@@ -29,6 +29,17 @@ body {
   margin-bottom: 20px;
 }
 
+.category-section {
+  margin-bottom: 30px;
+}
+
+.category-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 20px 0 15px;
+  color: #333;
+}
+
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -150,7 +161,7 @@ button:hover {
 
 <div class="menu">
   <div class="header">Princess 点单</div>
-  <div class="menu-grid" id="menu"></div>
+  <div id="menu"></div>
 </div>
 
 <div class="cart">
@@ -162,12 +173,12 @@ button:hover {
 
 <script>
 const menuData = [
-  { id: 1, name: "Yihetang", price: 0, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Wn6TCZdW9MafTxif_tEqpac6Yb_jaBCKpA&s" },
-  { id: 2, name: "Tealive", price: 0, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEaSAISBahRRXbolEAdKw2fFKL6sqd0pOKyg&s" },
-  { id: 3, name: "Mcdonald Fries", price: 0, img: "https://www.mcdonalds.com.my/storage/feel_good/questions/EiwZVPx32QhMivUUR7iwtkxPrjJDSp6Srgn0b5HN.jpeg" },
-  { id: 4, name: "Mcdonald GCB", price: 0, img: "https://www.mcdonalds.com.my/storage/foods/November2022/i0utyZN7KfmhGiBCLnMv.png" },
-  { id: 5, name: "千层蛋糕", price: 0, img: "https://anchordairy.com.hk/media/recipe/thumbnail/thumbnail_recipe16.jpg" },
-  { id: 6, name: "甜品", price: 0, img: "https://pic5.sucaisucai.com/13/67/13167395_2.jpg"},
+  { id: 1, name: "Yihetang", price: 0, category: "Drinks", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Wn6TCZdW9MafTxif_tEqpac6Yb_jaBCKpA&s" },
+  { id: 2, name: "Tealive", price: 0, category: "Drinks", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEaSAISBahRRXbolEAdKw2fFKL6sqd0pOKyg&s" },
+  { id: 3, name: "Mcdonald Fries", price: 0, category: "McDonalds", img: "https://www.mcdonalds.com.my/storage/feel_good/questions/EiwZVPx32QhMivUUR7iwtkxPrjJDSp6Srgn0b5HN.jpeg" },
+  { id: 4, name: "Mcdonald GCB", price: 0, category: "McDonalds", img: "https://www.mcdonalds.com.my/storage/foods/November2022/i0utyZN7KfmhGiBCLnMv.png" },
+  { id: 5, name: "千层蛋糕", price: 0, category: "Dessert", img: "https://anchordairy.com.hk/media/recipe/thumbnail/thumbnail_recipe16.jpg" },
+  { id: 6, name: "甜品", price: 0, category: "Dessert", img: "https://pic5.sucaisucai.com/13/67/13167395_2.jpg" },
   { id: 7, name: "Pizza", price: 0, img: "https://www.dominos.com.my/ManagedAssets/MY/product/PXBP/MY_PXBP_en_menu_12818.jpg?v-1509882796" },
   { id: 8, name: "Pasta", price: 0, img: "https://picsum.photos/300/200?3" },
   { id: 9, name: "Fries", price: 0, img: "https://picsum.photos/300/200?4" },
@@ -177,26 +188,46 @@ const menuData = [
   { id: 13, name: "Pasta", price: 0, img: "https://picsum.photos/300/200?3" },
   { id: 14, name: "Fries", price: 0, img: "https://picsum.photos/300/200?4" },
   { id: 15, name: "Drink", price: 0, img: "https://picsum.photos/300/200?5" },
-]
+];
 
 let cart = {};
 
+function renderCategory(title, items) {
+  if (!items.length) return "";
+
+  return `
+    <div class="category-section">
+      <div class="category-title">${title}</div>
+      <div class="menu-grid">
+        ${items.map(item => `
+          <div class="card">
+            <img src="${item.img}">
+            <div class="card-body">
+              <div class="food-name">${item.name}</div>
+              <div class="price">$0</div>
+              <button onclick="addToCart(${item.id})">Add to Cart</button>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
 function renderMenu() {
   const menu = document.getElementById("menu");
-  menu.innerHTML = "";
 
-  menuData.forEach(item => {
-    menu.innerHTML += `
-      <div class="card">
-        <img src="${item.img}">
-        <div class="card-body">
-          <div class="food-name">${item.name}</div>
-          <div class="price">$0</div>
-          <button onclick="addToCart(${item.id})">Add to Cart</button>
-        </div>
-      </div>
-    `;
-  });
+  const drinks = menuData.filter(item => item.category === "Drinks");
+  const desserts = menuData.filter(item => item.category === "Dessert");
+  const mcdonalds = menuData.filter(item => item.category === "McDonalds");
+  const others = menuData.filter(item => !item.category);
+
+  menu.innerHTML = `
+    ${renderCategory("Drinks", drinks)}
+    ${renderCategory("Dessert", desserts)}
+    ${renderCategory("McDonalds", mcdonalds)}
+    ${renderCategory("Menu", others)}
+  `;
 }
 
 function addToCart(id) {
