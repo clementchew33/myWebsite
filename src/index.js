@@ -68,12 +68,8 @@ export default {
 
     const discordResponse = await fetch(env.DISCORD_WEBHOOK_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        content: message
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: message })
     });
 
     if (!discordResponse.ok) {
