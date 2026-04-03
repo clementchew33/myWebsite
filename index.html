@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modern Food Ordering</title>
+<title>Princess Menu</title>
 
 <style>
 * {
@@ -357,7 +357,6 @@ async function checkout() {
 
   const order = items.map(item => ({
     name: item.name,
-    category: item.category || "Menu",
     qty: item.qty,
     remark: (item.remark || "").trim()
   }));
