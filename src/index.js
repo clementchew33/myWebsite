@@ -52,13 +52,13 @@ const lines = order.map((item) => {
   const qty = Number(item.qty || 0);
   const remark = String(item.remark || "").trim() || "-";
 
-  return `${name}
+  return `**${name}**
 Category: ${category}
 Qty: ${qty}
 Remarks: ${remark}`;
 }).join("\n\n");
 
-const message = `🛒 New order received\n\n${lines}`;
+const message = `**🛒 New order received**\n\n${lines}`;
 
     const discordResponse = await fetch(env.DISCORD_WEBHOOK_URL, {
       method: "POST",
