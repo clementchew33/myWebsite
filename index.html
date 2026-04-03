@@ -140,6 +140,7 @@ button:hover {
   resize: vertical;
 }
 
+
 .qty-controls {
   display: flex;
   gap: 8px;
@@ -169,6 +170,17 @@ button:hover {
   border-radius: 8px;
 }
 
+.checkout:hover {
+  background: #218838;
+}
+
+.helper-text {
+  font-size: 12px;
+  color: #777;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
 /* MOBILE */
 @media(max-width: 800px) {
   body {
@@ -176,6 +188,11 @@ button:hover {
   }
   .menu, .cart {
     width: 100%;
+  }
+
+  .cart {
+    position: static;
+    height: auto;
   }
 }
 </style>
@@ -191,27 +208,20 @@ button:hover {
 <div class="cart">
   <h2>🛒 Cart</h2>
   <div id="cart"></div>
+  <div class="helper-text">Checkout will open your email app with the order list pre-filled and send it to clementchew33@gmail.com.</div>
+
   <div class="total">Total: $<span id="total">0</span></div>
-  <button class="checkout">Checkout</button>
+  <button class="checkout" onclick="checkoutOrder()">Checkout</button>
 </div>
 
 <script>
 const menuData = [
   { id: 1, name: "Yihetang", price: 0, category: "Drinks", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Wn6TCZdW9MafTxif_tEqpac6Yb_jaBCKpA&s" },
   { id: 2, name: "Tealive", price: 0, category: "Drinks", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEaSAISBahRRXbolEAdKw2fFKL6sqd0pOKyg&s" },
-  { id: 3, name: "Mcdonald Fries", price: 0, category: "McDonalds", img: "https://www.mcdonalds.com.my/storage/feel_good/questions/EiwZVPx32QhMivUUR7iwtkxPrjJDSp6Srgn0b5HN.jpeg" },
-  { id: 4, name: "Mcdonald GCB", price: 0, category: "McDonalds", img: "https://www.mcdonalds.com.my/storage/foods/November2022/i0utyZN7KfmhGiBCLnMv.png" },
+  { id: 4, name: "Mcdonald GCB", price: 0, category: "McDonalds", img: "https://s3.ap-east-1.amazonaws.com/mcdonalds.com.hk/wp-content/uploads/2020/07/08215214/MS240103_EK_EVM_New-GCB-2.png" },
   { id: 5, name: "千层蛋糕", price: 0, category: "Dessert", img: "https://anchordairy.com.hk/media/recipe/thumbnail/thumbnail_recipe16.jpg" },
   { id: 6, name: "甜品", price: 0, category: "Dessert", img: "https://pic5.sucaisucai.com/13/67/13167395_2.jpg" },
   { id: 7, name: "Pizza", price: 0, img: "https://www.dominos.com.my/ManagedAssets/MY/product/PXBP/MY_PXBP_en_menu_12818.jpg?v-1509882796" },
-  { id: 8, name: "Pasta", price: 0, img: "https://picsum.photos/300/200?3" },
-  { id: 9, name: "Fries", price: 0, img: "https://picsum.photos/300/200?4" },
-  { id: 10, name: "Drink", price: 0, img: "https://picsum.photos/300/200?5" },
-  { id: 11, name: "Burger", price: 0, img: "https://picsum.photos/300/200?1" },
-  { id: 12, name: "Pizza", price: 0, img: "https://picsum.photos/300/200?2" },
-  { id: 13, name: "Pasta", price: 0, img: "https://picsum.photos/300/200?3" },
-  { id: 14, name: "Fries", price: 0, img: "https://picsum.photos/300/200?4" },
-  { id: 15, name: "Drink", price: 0, img: "https://picsum.photos/300/200?5" },
 ];
 
 const categoryLabels = {
@@ -295,13 +305,13 @@ function renderCart() {
   let total = 0;
 
   Object.values(cart).forEach(item => {
-    total += 0; // always zero
+    total += item.price * item.qty;
 
     cartDiv.innerHTML += `
       <div class="cart-item">
         <div class="cart-item-info">
           <div>${item.name}</div>
-          <div>$0</div>
+          <div>$${item.price}</div>
           <label class="remark-label" for="remark-${item.id}">Remarks 备注</label>
           <textarea
             id="remark-${item.id}"
@@ -320,6 +330,47 @@ function renderCart() {
   });
 
   document.getElementById("total").innerText = total;
+}
+
+function buildOrderLines() {
+  return Object.values(cart).map((item, index) => {
+    const remarkText = item.remark && item.remark.trim()
+      ? `\n   Remarks 备注: ${item.remark.trim()}`
+      : "";
+
+    const categoryText = item.category || "Menu";
+
+    return `${index + 1}. ${item.name} x${item.qty}\n   Category 分类: ${categoryText}${remarkText}`;
+  });
+}
+
+function checkoutOrder() {
+  const items = Object.values(cart);
+  const email = "clementchew33@gmail.com";
+
+  if (!items.length) {
+    alert("Your cart is empty. Please add at least one item.");
+    return;
+  }
+
+  const orderLines = buildOrderLines();
+  const totalItems = items.reduce((sum, item) => sum + item.qty, 0);
+  const subject = "New Order - Princess 点单";
+  const body = [
+    "Hello,",
+    "",
+    "Here is the order list:",
+    "",
+    ...orderLines,
+    "",
+    `Total items 总数量: ${totalItems}`,
+    `Total 总价: $${document.getElementById("total").innerText}`,
+    "",
+    "Thank you."
+  ].join("\n");
+
+  const mailtoLink = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailtoLink;
 }
 
 renderMenu();
