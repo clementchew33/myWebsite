@@ -208,10 +208,10 @@ button:hover {
 <div class="cart">
   <h2>🛒 Cart</h2>
   <div id="cart"></div>
-  <div class="helper-text">Checkout will open your email app with the order list pre-filled and send it to clementchew33@gmail.com.</div>
+  <div class="helper-text">Checkout will send your order to Discord automatically.</div>
 
   <div class="total">Total: $<span id="total">0</span></div>
-  <button class="checkout" onclick="checkoutOrder()">Checkout</button>
+  <button class="checkout">Checkout</button>
 </div>
 
 <script>
@@ -344,37 +344,58 @@ function buildOrderLines() {
   });
 }
 
-function checkoutOrder() {
+renderMenu();
+</script>
+<script>
+async function checkout() {
   const items = Object.values(cart);
-  const email = "clementchew33@gmail.com";
 
   if (!items.length) {
-    alert("Your cart is empty. Please add at least one item.");
+    alert("Cart is empty.");
     return;
   }
 
-  const orderLines = buildOrderLines();
-  const totalItems = items.reduce((sum, item) => sum + item.qty, 0);
-  const subject = "New Order - Princess 点单";
-  const body = [
-    "Hello,",
-    "",
-    "Here is the order list:",
-    "",
-    ...orderLines,
-    "",
-    `Total items 总数量: ${totalItems}`,
-    `Total 总价: $${document.getElementById("total").innerText}`,
-    "",
-    "Thank you."
-  ].join("\n");
+  const order = items.map(item => ({
+    name: item.name,
+    category: item.category || "Menu",
+    qty: item.qty,
+    remark: (item.remark || "").trim()
+  }));
 
-  const mailtoLink = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.location.href = mailtoLink;
+  const checkoutBtn = document.querySelector(".checkout");
+  const originalText = checkoutBtn.innerText;
+
+  checkoutBtn.disabled = true;
+  checkoutBtn.innerText = "Sending...";
+
+  try {
+    const res = await fetch("https://food-order-website.8yhcx5dkvd.workers.dev", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ order })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(data.error || "Failed to send order.");
+    }
+
+    alert("Order sent to Discord!");
+    cart = {};
+    renderCart();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to send order.");
+  } finally {
+    checkoutBtn.disabled = false;
+    checkoutBtn.innerText = originalText;
+  }
 }
 
-renderMenu();
+document.querySelector(".checkout").addEventListener("click", checkout);
 </script>
-
 </body>
 </html>
