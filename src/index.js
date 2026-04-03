@@ -46,25 +46,16 @@ export default {
       );
     }
 
-    const lines = order.map((item, index) => {
-      const name = String(item.name || "Unknown item");
-      const category = String(item.category || "Menu");
-      const qty = Number(item.qty || 0);
-      const remark = String(item.remark || "").trim() || "-";
+const lines = order.map((item, index) => {
+  const name = String(item.name || "Unknown item");
+  const category = String(item.category || "Menu");
+  const qty = Number(item.qty || 0);
+  const remark = String(item.remark || "").trim() || "-";
 
-      return [
-        `**${index + 1}. ${name}**`,
-        `Category: ${category}`,
-        `Qty: ${qty}`,
-        `Remarks: ${remark}`
-      ].join("\n");
-    }).join("\n\n");
+  return `**${index + 1}. ${name}** | ${category} | x${qty}${remark ? ` | ${remark}` : ""}`;
+}).join("\n");
 
-    const message = [
-      "🛒 **New order received**",
-      "",
-      lines
-    ].join("\n");
+const message = `🛒 **New order received**\n${lines}`;
 
     const discordResponse = await fetch(env.DISCORD_WEBHOOK_URL, {
       method: "POST",
