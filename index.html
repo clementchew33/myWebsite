@@ -357,6 +357,7 @@ async function checkout() {
 
   const order = items.map(item => ({
     name: item.name,
+    category: item.category || "Menu",
     qty: item.qty,
     remark: (item.remark || "").trim()
   }));
