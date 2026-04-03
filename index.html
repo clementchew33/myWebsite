@@ -162,11 +162,11 @@ button:hover {
 
 <script>
 const menuData = [
-  { id: 1, name: "Burger", price: 8, img: "https://picsum.photos/300/200?1" },
-  { id: 2, name: "Pizza", price: 12, img: "https://picsum.photos/300/200?2" },
-  { id: 3, name: "Pasta", price: 10, img: "https://picsum.photos/300/200?3" },
-  { id: 4, name: "Fries", price: 5, img: "https://picsum.photos/300/200?4" },
-  { id: 5, name: "Drink", price: 3, img: "https://picsum.photos/300/200?5" }
+  { id: 1, name: "Burger", price: 0, img: "https://picsum.photos/300/200?1" },
+  { id: 2, name: "Pizza", price: 0, img: "https://picsum.photos/300/200?2" },
+  { id: 3, name: "Pasta", price: 0, img: "https://picsum.photos/300/200?3" },
+  { id: 4, name: "Fries", price: 0, img: "https://picsum.photos/300/200?4" },
+  { id: 5, name: "Drink", price: 0, img: "https://picsum.photos/300/200?5" }
 ];
 
 let cart = {};
@@ -181,7 +181,7 @@ function renderMenu() {
         <img src="${item.img}">
         <div class="card-body">
           <div class="food-name">${item.name}</div>
-          <div class="price">$${item.price}</div>
+          <div class="price">$0</div>
           <button onclick="addToCart(${item.id})">Add to Cart</button>
         </div>
       </div>
@@ -218,13 +218,13 @@ function renderCart() {
   let total = 0;
 
   Object.values(cart).forEach(item => {
-    total += item.price * item.qty;
+    total += 0; // always zero
 
     cartDiv.innerHTML += `
       <div class="cart-item">
         <div>
           ${item.name}<br>
-          $${item.price}
+          $0
         </div>
         <div class="qty-controls">
           <button onclick="changeQty(${item.id}, -1)">-</button>
